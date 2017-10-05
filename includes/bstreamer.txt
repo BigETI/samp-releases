@@ -1,0 +1,404 @@
+BStreamer include documentation made by BigETI © 2012
+
+Requires
+- a_samp.inc - SA:MP Development Team
+- foreach.inc - Y_Less
+- sscanf2.inc (Plugin "sscanf.dll" or "sscanf.so") - Y_Less [ EXTENDED ]
+
+Defines
+- How to use the defines?
+- They have to be defined before bstreamer.inc has been included!
+
+	-> USE_MAP_FILES
+	 - This definition allows you to use the file related functions.
+	 - Requires the sscanf include and plugin.
+
+	-> LIMIT_B_OBJECTS
+	 - Limits the amount of player objects streamed for each individual player.
+	 - By default (400).
+	 - It's a bad idea to use a value above 400!
+
+	-> MAX_B_OBJECTS
+	 - Limits the amount of global objects to use inside a gamemode or filterscript.
+	 - By default (2000).
+	 - Using a higher value requires more script heapspace!
+
+	-> B_OBJECT_STREAM_DISTANCE
+	 - Limits the default stream distance of a global object.
+	 - By default (200.0).
+	 - Each object can use an individual stream distance ( Good for small objects inside a map )
+
+	-> B_OBJECT_TICK
+	 - Defines the update tick in milliseconds
+	 - By default (100).
+	 - Using a value below 100 shall require more resources!
+
+	-> USE_CAMERA_STREAM
+	 - Defines that the player camera will be used as the center stream point.
+	 - This feature is experimental!
+
+Callbacks
+- Callbacks are basicly event handlers to handle specific events in your script.
+
+	-> public OnBObjectStreamIn(playerid, bobjectid, pobjectid)
+	 - playerid		--> Player ID									(_:)
+	 - bobjectid	--> Object ID from CreateBObject()				(_:)
+	 - pobjectid	--> Player object ID from CreatePlayerObject()	(_:)
+
+	 - A callback which will be called if a single object will be streamed in for a player.
+	 - Returning 0 will deny streaming in the specific object for the specific player.
+
+
+	-> OnBObjectStreamOut(playerid, bobjectid, pobjectid)
+	 - playerid		--> Player ID									(_:)
+	 - bobjectid	--> Object ID from CreateBObject()				(_:)
+	 - pobjectid	--> Player object ID from CreatePlayerObject()	(_:)
+
+	 - A callback which will be called if a single object will be streamed out for a player.
+	 - Returning 0 will deny streaming out the specific object for the specific player.
+
+
+	-> OnBObjectMoved(bobjectid)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - A callback which will be called if the object has moved.
+	 - Only works with MoveBObject().
+
+Stocks
+- Stocks are basicly functions which can be used in your script.
+
+	-> CreateBObject(modelid, Float:X, Float:Y, Float:Z, Float:rX, Float:rY, Float:rZ, Float:DrawDistance = B_OBJECT_STREAM_DISTANCE, worldid = -1, interiorid = -1, playerid = -1)
+	 - modelid		--> Object model ID						(_:)
+	   X			--> Set the X position of the object	(Float:)
+	   Y			--> Set the Y position of the object	(Float:)
+	   Z			--> Set the Z position of the object	(Float:)
+	   rX			--> Set the X rotation of the object	(Float:)
+	   rY			--> Set the Y rotation of the object	(Float:)
+	   rZ			--> Set the Z rotation of the object	(Float:)
+	   DrawDistance	--> Set the individual draw distance	(Float:)	[Optional; B_OBJECT_STREAM_DISTANCE by default]
+	   worldid		--> Set the individual virtual world	(_:)		[Optional; (-1) by default; (-1) means all virtual worlds]
+	   interiorid	--> Set the individual interior ID		(_:)		[Optional; (-1) by default; (-1) means all interiors]
+	   playerid		--> Set the individual player ID		(_:)		[Optional; (-1) by default; (-1) means all players]
+	   
+	 - Returns object ID if successful; else (-1).
+	 - Used to create a streamable object.
+
+
+	-> DestroyBObject(bobjectid)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - Returns (true) if successful; else (false).
+	 - Used to destroy a specific global object.
+
+
+	-> DestroyAllBObjects(single_vworld = -1)
+	 - single_vworld	--> Set virtual world to clear	(_:)	[Optional; (-1) by default; (-1) means all virtual worlds!]
+	 
+	 - Returns (true) if successful; else (false).
+	 - Used to destroy a specific global object.
+
+
+	-> SetBObjectPos(bobjectid, Float:X, Float:Y, Float:Z)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - X			--> Set the X position of the object	(Float:)
+	 - Y			-->	Set the Y position of the object	(Float:)
+	 - Z			-->	Set the Z position of the object	(Float:)
+
+	 - Returns (true) if successful; else (false).
+	 - Used to set the position of a specific object.
+
+
+	-> SetBObjectPosEx(bobjectid, Float:X, Float:Y, Float:Z, Float:rX, Float:rY, Float:rZ)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - X			--> Set the X position of the object	(Float:)
+	 - Y			-->	Set the Y position of the object	(Float:)
+	 - Z			-->	Set the Z position of the object	(Float:)
+	 - rX			--> Set the X rotation of the object	(Float:)
+	 - rY			-->	Set the Y rotation of the object	(Float:)
+	 - rZ			-->	Set the Z rotation of the object	(Float:)
+	 
+	 - Returns (true) if successful; else (false).
+	 - Used to set the position and rotation of a specific object.
+
+
+	-> GetBObjectPos(bobjectid, &Float:X, &Float:Y, &Float:Z)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - X			--> Get the X position of the object	(Float:)	[Get Value]
+	 - Y			--> Get the Y position of the object	(Float:)	[Get Value]
+	 - Z			--> Get the Z position of the object	(Float:)	[Get Value]
+
+	 - Returns nothing special.
+	 - Used to get the position of a specific object.
+
+
+	-> GetBObjectPosEx(bobjectid, &Float:X, &Float:Y, &Float:Z, &Float:rX, &Float:rY, &Float:rZ)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - X			--> Get the X position of the object	(Float:)	[Get Value]
+	 - Y			--> Get the Y position of the object	(Float:)	[Get Value]
+	 - Z			--> Get the Z position of the object	(Float:)	[Get Value]
+	 - rX			--> Get the X rotation of the object	(Float:)	[Get Value]
+	 - rY			--> Get the Y rotation of the object	(Float:)	[Get Value]
+	 - rZ			--> Get the Z rotation of the object	(Float:)	[Get Value]
+
+	 - Returns nothing special.
+	 - Used to get the position and rotation of a specific object.
+
+
+	-> SetBObjectRot(bobjectid, Float:rX, Float:rY, Float:rZ)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - rX			--> Set the X rotation of the object	(Float:)
+	 - rY			--> Set the Y rotation of the object	(Float:)
+	 - rZ			--> Set the Z rotation of the object	(Float:)
+
+	 - Returns nothing special.
+	 - Used to set the rotation of a specific object.
+
+
+	-> GetBObjectRot(bobjectid, &Float:rX, &Float:rY, &Float:rZ)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - rX			--> Get the X rotation of the object	(Float:)	[Get Value]
+	 - rY			--> Get the Y rotation of the object	(Float:)	[Get Value]
+	 - rZ			--> Get the Z rotation of the object	(Float:)	[Get Value]
+
+	 - Returns nothing special.
+	 - Used to get the rotation of a specific object.
+
+
+	-> bStream_SetUpdate(updatetime = B_OBJECT_TICK)
+	 - updatetime	--> Update time in milliseconds	(_:)	[Optional; B_OBJECT_TICK by default]
+
+	 - Returns nothing special.
+	 - Used to manipulate the update timer of the object streamer.
+	 - Using a value below 100 shall require more resources!
+
+
+	-> AssignBObjectForVirtualWorld(bobjectid, worldid = -1)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+	 - worldid		--> Virtual World ID				(_:)	[Optional; (-1) by default; (-1) means all virtual worlds]
+
+	 - Returns (true) if successful; else (false).
+	 - Used to manipulate the virtual world of a specific streamable object.
+
+
+	-> AssignBObjectForInterior(bobjectid, interiorid = -1)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+	 - interiorid	--> Interior ID						(_:)	[Optional; (-1) by default; (-1) means all interiors]
+
+	 - Returns (true) if successful; else (false).
+	 - Used to manipulate the interior of a specific streamable object.
+
+
+	-> AssignBObjectForPlayer(bobjectid, playerid = -1)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+	 - playerid		--> Player ID						(_:)	[Optional; (-1) by default; (-1) means all players]
+
+	 - Returns (true) if successful; else (false).
+	 - Used to manipulate the interior of a specific streamable object.
+
+
+	-> MoveBObject(bobjectid, Float:X, Float:Y, Float:Z, Float:speed, Float:rX = -1000.0, Float:rY = -1000.0, Float:rZ = -1000.0)
+	 - bobjectid	--> Object ID from CreateBObject()		(_:)
+	 - X			--> Move the object to the X position	(Float:)
+	 - Y			-->	Move the object to the Y position	(Float:)
+	 - Z			-->	Move the object to the Z position	(Float:)
+	 - rX			--> Rotate the object to the X position	(Float:)	[Optional; (-1000.0) by default]
+	 - rY			-->	Rotate the object to the Y position	(Float:)	[Optional; (-1000.0) by default]
+	 - rZ			-->	Rotate the object to the Z position	(Float:)	[Optional; (-1000.0) by default]
+
+	 - Returns (true) if successful; else (false).
+	 - Used to move and rotate the streamable object to the given point.
+	 - Calls OnBObjectMoved() if finished.
+
+
+	-> StopBObject(bobjectid)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - Returns (true) if successful; else (false).
+	 - Used to stop the streamable object.
+
+
+	-> AttachCameraToBObject(playerid, bobjectid)
+	 - playerid		--> Player ID						(_:)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - Returns (true) if successful; else (false).
+	 - Used to attach the player camera to a specific streamable object.
+
+
+	-> SaveBMap(const file_name[], bool:use_vworld = false, vworld = -1)
+	 - file_name	--> File name string	(const _: [])
+	 - use_vworld	--> Use "vworld" value	(bool:)			[Optional; (false) by default]
+	 - vworld		--> Virtual world		(_:)			[Optional; (-1) by default; -1 means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Used to save the current stack of streamable objects and vehicles as a binary type of file.
+	 - If use_vworld is (true) then only the given virtual world will be touched.
+
+
+	-> LoadBMap(const file_name[], bool:error_clear = true, bool:use_vworld = false, vworld = -1)
+	 - file_name	--> File name string			(const _: [])
+	 - error_clear	--> Destroy objects if error	(bool:)			[Optional; (true) by default]
+	 - use_vworld	--> Use "vworld" value			(bool:)			[Optional; (false) by default]
+	 - vworld		--> Virtual world				(_:)			[Optional; (-1) by default; -1 means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Used to load the stack of streamable objects and vehicles from a binary type of file.
+	 - If error_clear is (true) then it will destroy all the objects if an error occurs while loading.
+	 - If use_vworld is (true) then only the given virtual world will be touched.
+
+
+	-> SavePWN(const file_name[], bool:use_vworld = false, vworld = -1)
+	 - file_name	--> File name string	(const _: [])
+	 - use_vworld	--> Use "vworld" value	(bool:)			[Optional; (false) by default]
+	 - vworld		--> Virtual world		(_:)			[Optional; (-1) by default; -1 means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Used to save the current stack of streamable objects and vehicles as a script file.
+	 - If use_vworld is (true) then only the given virtual world will be touched.
+
+
+	-> LoadPWN(const file_name[], bool:error_clear = true, bool:use_vworld = false, vworld = -1)
+	 - file_name	--> File name string			(const _: [])
+	 - error_clear	--> Destroy objects if error	(bool:)			[Optional; (true) by default]
+	 - use_vworld	--> Use "vworld" value			(bool:)			[Optional; (false) by default]
+	 - vworld		--> Virtual world				(_:)			[Optional; (-1) by default; -1 means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Used to load the stack of streamable objects and vehicles from a script file.
+	 - If error_clear is (true) then it will destroy all the objects if an error occurs while loading.
+	 - If use_vworld is (true) then only the given virtual world will be touched.
+
+
+	-> BMap_To_PWN(bmap_fname[], pwn_fname[], bool:error_clear = true, bool:use_single_vworld = false, single_vworld = -1)
+	 - bmap_fname			--> Binary map file name		(_: [])
+	 - pwn_fname			--> PAWN map file name			(_: [])
+	 - error_clear			--> Destroy objects if error	(bool:)	[Optional; (true) by default]
+	 - use_single_vworld	--> Use "single_vworld" value	(bool:)	[Optional; (false) by default]
+	 - single_vworld		--> Virtual world				(_:)	[Optional; (-1) by default; (-1) means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Converts a binary type of map file into a PAWN script map.
+
+
+	-> PWN_To_BMap(pwn_fname[], bmap_fname[], bool:use_single_vworld = false, single_vworld = -1)
+	 - pwn_fname			--> PAWN map file name			(_: [])
+	 - bmap_fname			--> Binary map file name		(_: [])
+	 - error_clear			--> Destroy objects if error	(bool:)	[Optional; (true) by default]
+	 - use_single_vworld	--> Use "single_vworld" value	(bool:)	[Optional; (false) by default]
+	 - single_vworld		--> Virtual world				(_:)	[Optional; (-1) by default; (-1) means all virtual worlds]
+
+	 - Only works if USE_MAP_FILES has been defined!
+	 - Returns (true) if successful; else (false).
+	 - Converts a PAWN script map into a binary type of map file.
+
+
+	-> CreateBVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, interior = 0, vworld = 0)
+	 - vehicletype		--> Vehicle model ID						(_:)
+	 - x				--> Set the X position of the vehicle		(Float:)
+	 - y				--> Set the Y position of the vehicle		(Float:)
+	 - z				--> Set the Z position of the vehicle		(Float:)
+	 - rotation			--> Set the rotation of the vehicle			(Float:)
+	 - color1			--> Set the primary vehicle color			(_:)
+	 - color2			--> Set the secondary vehicle color			(_:)
+	 - respawn_delay	--> Set the respawn delay of the vehicle	(_:)
+	 - interior			--> Interior ID								(_:)		[Optional; (0) by default]
+	 - vworld			--> Virtual world							(_:)		[Optional; (0) by default]
+
+	 - Returns vehicle ID if successful; else (0).
+	 - Used to create a saveable vehicle.
+
+
+	-> DestroyBVehicle(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns (true) if successful; else (false).
+	 - Used to remove a saveable vehicle.
+
+
+	-> DestroyAllBVehicles(bool:use_vworld = false, vworld = 0)
+	 - use_vworld	--> Use "vworld" value	(bool:)	[Optional; (false) by default]
+	 - vworld		--> Virtual world		(_:)	[Optional; (0) by default]
+
+	 - Returns nothing special.
+	 - Used to remove all saveable vehicles
+	 - If use_vworld is (true) then only the saveable vehicle in the given virtual world will be removed.
+
+
+	-> GetBVehicleColors(vehicleid, &color1, &color2)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+	 - color1		-->	Primary color ID					(_:)	[Get value]
+	 - color2		-->	Secondary color ID					(_:)	[Get value]
+
+	 - Returns nothing special.
+	 - Used to get the both vehicle colors.
+
+
+	-> GetBVehicleData(vehicleid, &color1, &color2, &respawn_delay, &interior)
+	 - vehicleid		--> Vehicle ID from CreateBVehicle()	(_:)
+	 - color1			-->	Primary color ID					(_:)	[Get value]
+	 - color2			-->	Secondary color ID					(_:)	[Get value]
+	 - respawn_delay	-->	Respawn delay						(_:)	[Get value]
+	 - interior			-->	Interior ID							(_:)	[Get value]
+
+	 - Returns nothing special.
+	 - Used to get both vehicle colors, respawn delay and interior ID of the saveable vehicle.
+
+
+	-> IsCameraInRangeOfPoint(playerid, Float:range, Float:X, Float:Y, Float:Z)
+	 - playerid	--> Player ID		(_:)
+	 - range	--> Distance limit	(Float:)
+	 - X		-->	X position		(Float:)
+	 - Y		-->	Y position		(Float:)
+	 - Z		-->	Z position		(Float:)
+
+	 - Returns (true) is successful; else (false).
+	 - Used to check if the point is in the given range of the player camera.
+
+Macros
+- Macros are used like functions but differs from stocks
+
+	-> IsValidBObject(bobjectid)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - Returns (true) if successful; else (false).
+
+
+	-> IsBObjectMoving(bobjectid)
+	 - bobjectid	--> Object ID from CreateBObject()	(_:)
+
+	 - Returns (true) if successful; else (false).
+
+
+	-> IsValidBVehicle(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns (true) if successful; else (false).
+
+
+	-> GetBVehicleColor1(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns primary vehicle color ID; else (0).
+
+
+	-> GetBVehicleColor2(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns secondary vehicle color ID; else (0).
+
+
+	-> GetBVehicleResDelay(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns respawn delay; else (0).
+
+
+	-> GetBVehicleInterior(vehicleid)
+	 - vehicleid	--> Vehicle ID from CreateBVehicle()	(_:)
+
+	 - Returns interior ID; else (0).
